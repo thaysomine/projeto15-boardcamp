@@ -70,7 +70,6 @@ export async function getRentals(req, res) {
     
         return res.send(rentals);
         } catch (e) {
-            console.log("erro ao pegar os alugueis", e);
             return res.sendStatus(500);
         }
 }
@@ -78,7 +77,6 @@ export async function getRentals(req, res) {
 export async function postRentals(req, res) {
     const { customerId, gameId, daysRented } = req.body;
     const dateNow = dayjs().format("YYYY-MM-DD");
-    console.log(dateNow);
 
     try {
         await db.query(`
@@ -103,7 +101,6 @@ export async function postRentals(req, res) {
         `, [customerId, gameId, dateNow, daysRented, null, null]);
         res.sendStatus(201);
     } catch (error) {
-        console.log('Erro ao adicionar locação', error);
         res.sendStatus(500);
     }
 }
@@ -111,7 +108,6 @@ export async function postRentals(req, res) {
 export async function finishRentals(req, res) {
     const { id } = req.params;
     const dateNow = dayjs().format("YYYY-MM-DD");
-    console.log(dateNow);
     
     try {
         await db.query(`
@@ -123,7 +119,6 @@ export async function finishRentals(req, res) {
         `, [dateNow, id]);
         res.sendStatus(200);
     } catch (error) {
-        console.log('Erro ao finalizar aluguer', error);
         res.sendStatus(500);
     }
 }
@@ -135,7 +130,6 @@ export async function deleteRentals(req, res) {
         await db.query('DELETE FROM rentals WHERE id = $1', [id]);
         res.sendStatus(200);
     } catch (error) {
-        console.log('Erro ao deletar aluguel', error);
         res.sendStatus(500);
     }
 }

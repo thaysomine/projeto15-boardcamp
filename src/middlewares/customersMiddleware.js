@@ -11,13 +11,11 @@ export async function validateCustomers(req, res, next) {
     });
     const validation = schema.validate({name, phone, cpf, birthday});
     if (validation.error) {
-        console.log('Erro ao adicionar cliente', validation.error);
         res.sendStatus(400);
         return;
     }
     const checkCpf = await db.query('SELECT * FROM customers WHERE cpf = $1', [cpf]);
     if (checkCpf.rows.length > 0) {
-        console.log('Cliente já cadastrado');
         res.sendStatus(409);
     }
     next();

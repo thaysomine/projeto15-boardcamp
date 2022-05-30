@@ -9,13 +9,10 @@ export async function validateRentals(req, res, next) {
     const checkAvaliable = await db.query('SELECT * FROM games WHERE id = $1 AND "stockTotal" = $2', [gameId, 0]);
 
     if(daysRented <= 0 || checkCustomer.rows.length === 0 || checkGame.rows.length === 0 || checkAvaliable.rows.length > 0) {
-        console.log('Erro ao adicionar locação');
         res.sendStatus(400);
         return;
     }
-    console.log(checkGame);
     await db.query('UPDATE games SET "stockTotal" = $1 WHERE id = $2', [(checkGame.rows[0].stockTotal-1), gameId]);
-    console.log(checkGame);
     next();
 }
 
@@ -24,13 +21,11 @@ export async function validateRentalsUpdate(req, res, next) {
 
     const checkId = await db.query('SELECT * FROM rentals WHERE id = $1', [id]);
     if (checkId.rows.length === 0) {
-        console.log('Erro ao atualizar locação');
         res.sendStatus(404);
         return;
     }
     const checkFinish = await db.query('SELECT * FROM rentals WHERE id = $1 AND "returnDate" IS NOT NULL', [id]);
     if (checkFinish.rows.length > 0) {
-        console.log('Locação já finalizada');
         res.sendStatus(400);
         return;
     }

@@ -12,15 +12,12 @@ export async function validateGames(req, res, next) {
     const checkCategory = await db.query('SELECT * FROM categories WHERE id = $1', [categoryId]);
 
     if (validation.error || checkCategory.rows.length === 0) {
-        console.log('Erro ao cadastrar jogo');
         res.sendStatus(400);
         return;
     }
 
     const checkName = await db.query('SELECT * FROM games WHERE name = $1', [name]);
-    console.log(checkName, 'checkName');
     if(checkName.rows.length > 0){
-        console.log('Jogo já existe');
         res.status(409).send('Game already exists');
         return;
     }
