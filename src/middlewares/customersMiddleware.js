@@ -3,6 +3,7 @@ import db from '../db.js';
 
 export async function validateCustomers(req, res, next) {
     const { name, phone, cpf, birthday } = req.body;
+    const { id } = req.params;
     const schema = joi.object({
         name: joi.string().required(),
         phone: joi.string().required().min(10).max(11),
@@ -14,7 +15,7 @@ export async function validateCustomers(req, res, next) {
         res.sendStatus(400);
         return;
     }
-    const checkCpf = await db.query('SELECT * FROM customers WHERE cpf = $1', [cpf]);
+    const checkCpf = await db.query('SELECT * FROM customers WHERE cpf = $1 AND NOT id = $2', [cpf, id]);
     if (checkCpf.rows.length > 0) {
         res.sendStatus(409);
     }
