@@ -1,5 +1,4 @@
 import db from '../db.js';
-import joi from 'joi';
 import dayjs from 'dayjs';
 
 export async function getRentals(req, res) {
@@ -108,7 +107,17 @@ export async function postRentals(req, res) {
 export async function finishRentals(req, res) {
     const { id } = req.params;
     const dateNow = dayjs().format("YYYY-MM-DD");
-    
+
+        const gameId = await db.query(`
+            SELECT "gameId" FROM rentals
+            WHERE id = $1
+        `, [id]);
+        const checkGame = await db.query(`
+            SELECT * FROM games
+            WHERE id = $1
+        `, [gameId.rows[0].gameId]);
+
+    console.log(checkGame.rows, gameId.rows);
     try {
         await db.query(`
             UPDATE rentals SET
@@ -117,8 +126,10 @@ export async function finishRentals(req, res) {
                     (($1 - (SELECT "rentDate" FROM rentals WHERE id = $2)) * games."pricePerDay") - rentals."originalPrice", 0)
                 FROM games WHERE rentals.id = $2 AND rentals."gameId" = games.id
         `, [dateNow, id]);
+        await db.query('UPDATE games SET "stockTotal" = $1 WHERE id = $2', [(checkGame.rows[0].stockTotal+1), gameId.rows[0].gameId]);
         res.sendStatus(200);
     } catch (error) {
+        console.log(error)
         res.sendStatus(500);
     }
 }
