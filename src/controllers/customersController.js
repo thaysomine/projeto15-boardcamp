@@ -2,8 +2,12 @@ import db from '../db.js';
 import joi from 'joi';
 
 export async function getCustomers(req, res) {
+    const { cpf } = req.query;
+
     try {
-        const result = await db.query('SELECT * FROM customers');
+        const result = !cpf
+        ? await db.query('SELECT * FROM customers')
+        : await db.query('SELECT * FROM customers WHERE customers.cpf LIKE $1', [`${cpf}%`]);
         const customersList = result.rows;
         console.log(customersList, 'customers');
         res.send(customersList);
