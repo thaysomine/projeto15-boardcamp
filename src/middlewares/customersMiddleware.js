@@ -4,6 +4,7 @@ import db from '../db.js';
 export async function validateCustomers(req, res, next) {
     const { name, phone, cpf, birthday } = req.body;
     const { id } = req.params;
+
     const schema = joi.object({
         name: joi.string().required(),
         phone: joi.string().required().min(10).max(11),
@@ -19,5 +20,6 @@ export async function validateCustomers(req, res, next) {
     if (checkCpf.rows.length > 0) {
         res.sendStatus(409);
     }
+    
     next();
 }
