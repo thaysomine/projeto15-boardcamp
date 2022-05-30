@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import db from './db.js';
 import categoriesRouter from './routes/categoriesRouter.js';
 import gamesRouter from './routes/gamesRouter.js'
+import customersRouter from './routes/customersRouter.js';
 
 dotenv.config();
 const app = express();
@@ -14,5 +15,6 @@ app.use(cors());
 
 app.use(categoriesRouter);
 app.use(gamesRouter);
+app.use(customersRouter);
 
 app.listen(process.env.PORT || 4000, () => console.log('Server started'));
