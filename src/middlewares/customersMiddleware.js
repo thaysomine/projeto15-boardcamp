@@ -19,7 +19,8 @@ export async function validateCustomers(req, res, next) {
     const checkCpf = await db.query('SELECT * FROM customers WHERE cpf = $1 AND NOT id = $2', [cpf, id]);
     if (checkCpf.rows.length > 0) {
         res.sendStatus(409);
+        return;
     }
-    
+
     next();
 }
