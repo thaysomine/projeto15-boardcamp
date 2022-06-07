@@ -13,7 +13,9 @@ export async function validateCustomers(req, res, next) {
     });
     const validation = schema.validate({name, phone, cpf, birthday});
     const checkId = await db.query('SELECT * FROM customers WHERE id = $1', [id])
-    if (validation.error || checkId.rows.length === 0) {
+    if (validation.error || checkId.rows.length > 0) {
+        console.log(validation.error);
+        console.log(checkId.rows.length);
         res.sendStatus(400);
         return;
     }
